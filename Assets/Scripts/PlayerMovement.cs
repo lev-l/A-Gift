@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         Vector2 movementVector = new Vector2(Input.GetAxis("Horizontal"),
-                                            Input.GetAxis("Vertical"));
+                                            Input.GetAxis("Vertical")).normalized;
         float movementDistance = movementVector.magnitude * Speed * Time.deltaTime;
 
         if(_rigidbody.Cast(movementVector, _hitsBuffer, movementDistance) > 0)
@@ -37,17 +37,25 @@ public class PlayerMovement : MonoBehaviour
 
             for(int i = 0; i < _hits.Count; i++)
             {
+                //print(_hits[i].normal);
                 float projection = Vector2.Dot(movementVector, _hits[i].normal);
                 if(projection < 0)
                 {
+                    //print(_hits[i].normal * projection);
                     movementVector -= _hits[i].normal * projection;
                 }
 
-                movementDistance = _hits[i].distance - 0.1f < movementDistance ?
-                                                _hits[i].distance - 0.1f : movementDistance;
+                print(movementDistance);
+                print(_hits[i].distance);
+                movementDistance = _hits[i].distance + 0.2f < movementDistance ?
+                                                _hits[i].distance + 0.2f : movementDistance;
+                print(movementDistance);
             }
         }
 
+        //print(_transform.position);
+        //print(movementVector);
+        //print(movementDistance);
         _transform.Translate(movementVector * movementDistance);
     }
 }
