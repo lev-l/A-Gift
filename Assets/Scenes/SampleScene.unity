@@ -134,7 +134,8 @@ GameObject:
   - component: {fileID: 24021829}
   - component: {fileID: 24021830}
   - component: {fileID: 24021832}
-  - component: {fileID: 24021831}
+  - component: {fileID: 24021834}
+  - component: {fileID: 24021833}
   m_Layer: 3
   m_Name: Bow
   m_TagString: Untagged
@@ -209,19 +210,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &24021831
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 24021828}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84f65b20fead2d54bbafce4f753c13a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Speed: 0
 --- !u!114 &24021832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,6 +220,31 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2593322564810b149b64c57b31fd1589, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxEnergy: 15
+--- !u!114 &24021833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 24021828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef138cd01ad9625419906ceb36ac5b13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &24021834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 24021828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94e9faaf3bffe7c4cb465b681b2c2ed7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &376653382
@@ -362,7 +375,7 @@ Rigidbody2D:
   m_GameObject: {fileID: 376653382}
   m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 1
+  m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
