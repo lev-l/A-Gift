@@ -43,7 +43,6 @@ public class Bow : MonoBehaviour
 
     private void Fire()
     {
-        print("fire!");
         _currentEnergy = 0;
     }
 }
