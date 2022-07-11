@@ -35,13 +35,11 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
 
-            for(int i = 0; i < _hits.Count; i++)
+            for (int i = 0; i < _hits.Count; i++)
             {
-                //print(_hits[i].normal);
                 float projection = Vector2.Dot(movementVector, _hits[i].normal);
-                if (projection < 0) 
+                if (projection < 0)
                 {
-                    //print(_hits[i].normal * projection);
                     movementVector -= projection * _hits[i].normal;
                 }
 
@@ -50,9 +48,6 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        //print(_transform.position);
-        //print(movementVector);
-        //print(movementDistance);
-        _transform.position = movementVector * movementDistance;
+        _transform.Translate(movementVector * movementDistance);
     }
 }
