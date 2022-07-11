@@ -24,7 +24,7 @@ public class PlayerMovement : MonoBehaviour
                                             Input.GetAxis("Vertical")).normalized;
         float movementDistance = movementVector.magnitude * Speed * Time.deltaTime;
 
-        if(_rigidbody.Cast(movementVector, _hitsBuffer, movementDistance) > 0)
+        if(_rigidbody.Cast(movementVector, _hitsBuffer, movementDistance + 0.02f) > 0)
         {
             _hits.Clear();
             foreach(RaycastHit2D hit in _hitsBuffer)
@@ -39,23 +39,20 @@ public class PlayerMovement : MonoBehaviour
             {
                 //print(_hits[i].normal);
                 float projection = Vector2.Dot(movementVector, _hits[i].normal);
-                if(projection < 0)
+                if (projection < 0) 
                 {
                     //print(_hits[i].normal * projection);
-                    movementVector -= _hits[i].normal * projection;
+                    movementVector -= projection * _hits[i].normal;
                 }
 
-                print(movementDistance);
-                print(_hits[i].distance);
-                movementDistance = _hits[i].distance + 0.2f < movementDistance ?
-                                                _hits[i].distance + 0.2f : movementDistance;
-                print(movementDistance);
+                movementDistance = _hits[i].distance - 0.02f < movementDistance ?
+                                                _hits[i].distance - 0.02f : movementDistance;
             }
         }
 
         //print(_transform.position);
         //print(movementVector);
         //print(movementDistance);
-        _transform.Translate(movementVector * movementDistance);
+        _transform.position = movementVector * movementDistance;
     }
 }
