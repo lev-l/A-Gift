@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
 {
-    [SerializeField] protected int _maxHealth;
-    protected int _currentHealth;
+    [SerializeField] protected float _maxHealth;
+    protected float _currentHealth;
 
-    public virtual (int current, int max) GetHealthParams()
+    public virtual (float current, float max) GetHealthParams()
     {
         return (_currentHealth, _maxHealth);
     }
@@ -17,7 +17,7 @@ public class EnemyHealth : MonoBehaviour
         _currentHealth = _maxHealth;
     }
 
-    public virtual void Hurt(int damage)
+    public virtual void Hurt(float damage)
     {
         _currentHealth -= damage;
         if(_currentHealth <= 0)
@@ -26,7 +26,7 @@ public class EnemyHealth : MonoBehaviour
         }
     }
 
-    public virtual void Heal(int restorePoints)
+    public virtual void Heal(float restorePoints)
     {
         _currentHealth += restorePoints;
         if (_currentHealth > _maxHealth)
