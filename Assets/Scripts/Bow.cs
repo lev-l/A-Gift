@@ -35,6 +35,7 @@ public class Bow : MonoBehaviour
         if (_charging)
         {
             _currentEnergy += 10 * Time.deltaTime;
+            _animations.UpdateBowTense(_currentEnergy);
             if(_currentEnergy >= _maxEnergy)
             {
                 _currentEnergy = _maxEnergy;

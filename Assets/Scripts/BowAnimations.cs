@@ -14,8 +14,14 @@ public class BowAnimations : MonoBehaviour
         _arrow = _transform.GetChild(0);
     }
 
+    public void UpdateBowTense(float strength)
+    {
+        _transform.localPosition = _transform.TransformDirection(Vector3.down * strength / 30);
+    }
+
     public void StartArrow(float strength)
     {
+        UpdateBowTense(0);
         _arrow.SetParent(_transform);
         _arrow.localPosition = Vector3.zero;
         _arrow.localRotation = Quaternion.Euler(Vector3.zero);
