@@ -6,6 +6,8 @@ using UnityEngine;
 public interface BossStates
 {
     public BossStates UpdateState();
+
+    public void ReachedDestination();
 }
 
 public abstract class BossState : BossStates
@@ -23,6 +25,11 @@ public abstract class BossState : BossStates
     {
         return this;
     }
+
+    public virtual void ReachedDestination()
+    {
+        throw new System.NotImplementedException();
+    }
 }
 
 public class WaitingPlayer : BossState
@@ -34,7 +41,7 @@ public class WaitingPlayer : BossState
     public override BossStates UpdateState()
     {
         float distance = Vector2.Distance(_boss.transform.position, _playerTransform.position);
-        if (distance < 11)
+        if (distance < 13)
         {
             GameObject wall = Resources.Load<GameObject>("Wall");
             MonoBehaviour.Instantiate(wall);
@@ -42,27 +49,67 @@ public class WaitingPlayer : BossState
         }
         return base.UpdateState();
     }
+
+    public override void ReachedDestination()
+    {
+    }
 }
 
 public class EatingPlayer : BossState
 {
     private PlayerHealth _player;
+    private BossFight _bossFight;
+    private bool _reachedPlayer;
 
     public EatingPlayer(GameObject boss, Transform player) : base(boss, player)
     {
         _player = player.GetComponent<PlayerHealth>();
-        _boss.GetComponent<BossFight>().SetDestination(_playerTransform.position);
+    }
+
+    public override BossStates UpdateState()
+    {
+        _bossFight.SetDestination(_playerTransform.position);
+
+        if (_reachedPlayer)
+        {
+            return new AcidAttacks(_boss, _playerTransform);
+        }
+        return base.UpdateState();
+    }
+
+    public override void ReachedDestination()
+    {
+        _player.Hurt(10);
+        _reachedPlayer = true;
+    }
+}
+
+public class AcidAttacks : BossState
+{
+    private bool _isInCenter;
+
+    public AcidAttacks(GameObject boss, Transform player) : base(boss, player)
+    {
+        boss.GetComponent<BossFight>()
+            .SetDestination(boss.GetComponent<BossFight>().CenterPosition);
     }
 
     public override BossStates UpdateState()
     {
         return base.UpdateState();
     }
+
+    public override void ReachedDestination()
+    {
+        _isInCenter = true;
+    }
 }
 
 [RequireComponent(typeof(Seeker))]
 public class BossFight : MonoBehaviour
 {
+    public Vector2 CenterPosition;
+
     private BossStates _states;
     private Transform _transform;
     private Seeker _seeker;
@@ -76,6 +123,7 @@ public class BossFight : MonoBehaviour
         _transform = GetComponent<Transform>();
         _seeker = GetComponent<Seeker>();
 
+        CenterPosition = _transform.position;
         _seeker.pathCallback = new OnPathDelegate(PathCalculated);
         StartCoroutine(StatesChanging());
     }
@@ -93,6 +141,10 @@ public class BossFight : MonoBehaviour
     {
         _seeker.StartPath(start: _transform.position,
                             end: target);
+        
+        StopCoroutine(nameof(UpdatePosition));
+        _way.Clear();
+        _nextWaypoint = 0;
     }
 
     private IEnumerator UpdatePosition()
@@ -107,7 +159,6 @@ public class BossFight : MonoBehaviour
             }
             else
             {
-                print(_way[_nextWaypoint]);
                 _transform.Translate((_way[_nextWaypoint] - _transform.position).normalized * 5 * Time.deltaTime);
                 if (Vector2.Distance(_transform.position, _way[_nextWaypoint]) < 0.2f)
                 {
