@@ -64,6 +64,7 @@ public class EatingPlayer : BossState
     public EatingPlayer(GameObject boss, Transform player) : base(boss, player)
     {
         _player = player.GetComponent<PlayerHealth>();
+        _bossFight = boss.GetComponent<BossFight>();
     }
 
     public override BossStates UpdateState()
@@ -122,6 +123,7 @@ public class BossFight : MonoBehaviour
         _states = new WaitingPlayer(gameObject, FindObjectOfType<PlayerHealth>().transform);
         _transform = GetComponent<Transform>();
         _seeker = GetComponent<Seeker>();
+        _way = new List<Vector3>();
 
         CenterPosition = _transform.position;
         _seeker.pathCallback = new OnPathDelegate(PathCalculated);
@@ -156,6 +158,8 @@ public class BossFight : MonoBehaviour
                 _path = null;
                 _way.Clear();
                 _nextWaypoint = 0;
+
+                _states.ReachedDestination();
             }
             else
             {
