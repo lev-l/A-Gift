@@ -109,6 +109,7 @@ public class AcidAttacks : BossState
 [RequireComponent(typeof(Seeker))]
 public class BossFight : MonoBehaviour
 {
+    public float Speed;
     public Vector2 CenterPosition;
 
     private BossStates _states;
@@ -145,12 +146,11 @@ public class BossFight : MonoBehaviour
                             end: target);
         
         StopCoroutine(nameof(UpdatePosition));
-        _way.Clear();
-        _nextWaypoint = 0;
     }
 
     private IEnumerator UpdatePosition()
     {
+        print(_way[_way.Count - 1]);
         while (_path != null)
         {
             if (_nextWaypoint >= _way.Count - 1)
@@ -163,8 +163,10 @@ public class BossFight : MonoBehaviour
             }
             else
             {
-                _transform.Translate((_way[_nextWaypoint] - _transform.position).normalized * 5 * Time.deltaTime);
-                if (Vector2.Distance(_transform.position, _way[_nextWaypoint]) < 0.2f)
+                _transform.Translate((_way[_nextWaypoint] - _transform.position).normalized * Speed * Time.deltaTime);
+
+                float distanceToNextWaypoint = Vector2.Distance(_transform.position, _way[_nextWaypoint]);
+                if (distanceToNextWaypoint < 0.2f)
                 {
                     _nextWaypoint++;
                 }
@@ -176,7 +178,9 @@ public class BossFight : MonoBehaviour
     private void PathCalculated(Path path)
     {
         _path = path;
+        _way.Clear();
         _way = _path.vectorPath;
+        _nextWaypoint = 0;
         StartCoroutine(UpdatePosition());
     }
 }

@@ -540,6 +540,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f664fc42a3328784bbec0382f55bdd2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Speed: 2
+  CenterPosition: {x: 0, y: 0}
 --- !u!114 &389494050
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1303,7 +1305,7 @@ SpriteShapeRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
+  m_DynamicOccludee: 0
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
