@@ -144,16 +144,13 @@ public class BossFight : MonoBehaviour
     {
         _seeker.StartPath(start: _transform.position,
                             end: target);
-        
-        StopCoroutine(nameof(UpdatePosition));
     }
 
     private IEnumerator UpdatePosition()
     {
-        print(_way[_way.Count - 1]);
         while (_path != null)
         {
-            if (_nextWaypoint >= _way.Count - 1)
+            if (_nextWaypoint >= _way.Count)
             {
                 _path = null;
                 _way.Clear();
@@ -181,6 +178,8 @@ public class BossFight : MonoBehaviour
         _way.Clear();
         _way = _path.vectorPath;
         _nextWaypoint = 0;
-        StartCoroutine(UpdatePosition());
+
+        StopCoroutine(nameof(UpdatePosition));
+        StartCoroutine(nameof(UpdatePosition));
     }
 }
