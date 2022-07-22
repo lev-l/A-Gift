@@ -12,13 +12,17 @@ public interface BossStates
 
 public abstract class BossState : BossStates
 {
-    protected GameObject _boss;
+    protected Transform _boss;
     protected Transform _playerTransform;
+    protected RotateToTarget _rotations;
+    private Transform _bossSprite;
 
-    protected BossState(GameObject boss, Transform player)
+    protected BossState(Transform boss, Transform player)
     {
         _boss = boss;
         _playerTransform = player;
+        _rotations = boss.GetComponent<RotateToTarget>();
+        _bossSprite = _boss.GetChild(0);
     }
 
     public virtual BossStates UpdateState()
@@ -30,17 +34,27 @@ public abstract class BossState : BossStates
     {
         throw new System.NotImplementedException();
     }
+
+    protected Quaternion GetRotationToPlayer()
+    {
+        return Quaternion.Euler(Vector3.forward * _rotations.Rotate(_boss.position, _playerTransform.position));
+    }
+
+    protected void LookToPlayer()
+    {
+        _bossSprite.rotation = Quaternion.Euler(Vector3.forward * _rotations.Rotate(_boss.position, _playerTransform.position));
+    }
 }
 
 public class WaitingPlayer : BossState
 {
-    public WaitingPlayer(GameObject boss, Transform player) : base(boss, player)
+    public WaitingPlayer(Transform boss, Transform player) : base(boss, player)
     {
     }
 
     public override BossStates UpdateState()
     {
-        float distance = Vector2.Distance(_boss.transform.position, _playerTransform.position);
+        float distance = Vector2.Distance(_boss.position, _playerTransform.position);
         if (distance < 13)
         {
             GameObject wall = Resources.Load<GameObject>("Wall");
@@ -61,7 +75,7 @@ public class EatingPlayer : BossState
     private BossFight _bossFight;
     private bool _reachedPlayer;
 
-    public EatingPlayer(GameObject boss, Transform player) : base(boss, player)
+    public EatingPlayer(Transform boss, Transform player) : base(boss, player)
     {
         _player = player.GetComponent<PlayerHealth>();
         _bossFight = boss.GetComponent<BossFight>();
@@ -70,6 +84,7 @@ public class EatingPlayer : BossState
     public override BossStates UpdateState()
     {
         _bossFight.SetDestination(_playerTransform.position);
+        LookToPlayer();
 
         if (_reachedPlayer)
         {
@@ -88,15 +103,40 @@ public class EatingPlayer : BossState
 public class AcidAttacks : BossState
 {
     private bool _isInCenter;
+    private GameObject _acidSplash;
+    private int _timeToBlast = 20;
+    private int _lastTime;
+    private float _timeToTheNextState = 15;
 
-    public AcidAttacks(GameObject boss, Transform player) : base(boss, player)
+    public AcidAttacks(Transform boss, Transform player) : base(boss, player)
     {
         boss.GetComponent<BossFight>()
             .SetDestination(boss.GetComponent<BossFight>().CenterPosition);
+        _acidSplash = Resources.Load<GameObject>("AcidSplash");
+
+        _lastTime = _timeToBlast;
     }
 
     public override BossStates UpdateState()
     {
+        if (_isInCenter)
+        {
+            _lastTime--;
+            LookToPlayer();
+            
+            if(_lastTime == 0)
+            {
+                GameObject newAcidSplash = Object.Instantiate(_acidSplash, _boss);
+                newAcidSplash.transform.rotation = GetRotationToPlayer();
+                _lastTime = _timeToBlast;
+            }
+
+            _timeToTheNextState -= Time.deltaTime;
+            if(_timeToTheNextState <= 0)
+            {
+                return new EatingPlayer(_boss, _playerTransform);
+            }
+        }
         return base.UpdateState();
     }
 
@@ -106,7 +146,7 @@ public class AcidAttacks : BossState
     }
 }
 
-[RequireComponent(typeof(Seeker))]
+[RequireComponent(typeof(Seeker), typeof(RotateToTarget))]
 public class BossFight : MonoBehaviour
 {
     public float Speed;
@@ -121,8 +161,8 @@ public class BossFight : MonoBehaviour
 
     private void Start()
     {
-        _states = new WaitingPlayer(gameObject, FindObjectOfType<PlayerHealth>().transform);
         _transform = GetComponent<Transform>();
+        _states = new WaitingPlayer(_transform, FindObjectOfType<PlayerHealth>().transform);
         _seeker = GetComponent<Seeker>();
         _way = new List<Vector3>();
 
@@ -163,7 +203,7 @@ public class BossFight : MonoBehaviour
                 _transform.Translate((_way[_nextWaypoint] - _transform.position).normalized * Speed * Time.deltaTime);
 
                 float distanceToNextWaypoint = Vector2.Distance(_transform.position, _way[_nextWaypoint]);
-                if (distanceToNextWaypoint < 0.2f)
+                if (distanceToNextWaypoint < 1)
                 {
                     _nextWaypoint++;
                 }
