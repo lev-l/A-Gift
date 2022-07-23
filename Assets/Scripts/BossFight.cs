@@ -35,9 +35,14 @@ public abstract class BossState : BossStates
         throw new System.NotImplementedException();
     }
 
-    protected Quaternion GetRotationToPlayer()
+    protected Quaternion GetRotationToPlayer(float angleChange = 0)
     {
-        return Quaternion.Euler(Vector3.forward * _rotations.Rotate(_boss.position, _playerTransform.position, -90));
+        return Quaternion.Euler(Vector3.forward * _rotations.Rotate
+                                                            (
+                                                            _boss.position,
+                                                            _playerTransform.position,
+                                                            -90 + angleChange
+                                                            ));
     }
 
     protected void LookToPlayer()
@@ -174,7 +179,16 @@ public class WebAttack : BossState
 
     private void WebCast()
     {
+        float currentAngle = 45;
 
+        while(currentAngle >= -45)
+        {
+            GameObject newWeb = Object.Instantiate(_webThread, _boss);
+            newWeb.transform.SetParent(null);
+            newWeb.transform.rotation = GetRotationToPlayer(currentAngle);
+
+            currentAngle -= 3;
+        }
     }
 }
 
