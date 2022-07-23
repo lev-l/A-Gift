@@ -127,6 +127,7 @@ public class AcidAttacks : BossState
             if(_lastTime == 0)
             {
                 GameObject newAcidSplash = Object.Instantiate(_acidSplash, _boss);
+                newAcidSplash.transform.SetParent(null);
                 newAcidSplash.transform.rotation = GetRotationToPlayer();
                 _lastTime = _timeToBlast;
             }

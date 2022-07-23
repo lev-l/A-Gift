@@ -24,7 +24,7 @@ public class AcidSplash : MonoBehaviour
 
     private void Update()
     {
-        _transform.Translate(_transform.TransformDirection(Vector3.up * Time.deltaTime * Speed));
+        _transform.Translate(Vector3.up * Time.deltaTime * Speed);
     }
 
     private void FixedUpdate()
