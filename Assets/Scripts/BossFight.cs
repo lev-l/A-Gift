@@ -37,12 +37,12 @@ public abstract class BossState : BossStates
 
     protected Quaternion GetRotationToPlayer()
     {
-        return Quaternion.Euler(Vector3.forward * _rotations.Rotate(_boss.position, _playerTransform.position));
+        return Quaternion.Euler(Vector3.forward * _rotations.Rotate(_boss.position, _playerTransform.position, -90));
     }
 
     protected void LookToPlayer()
     {
-        _bossSprite.rotation = Quaternion.Euler(Vector3.forward * _rotations.Rotate(_boss.position, _playerTransform.position));
+        _bossSprite.rotation = GetRotationToPlayer();
     }
 }
 
@@ -104,7 +104,7 @@ public class AcidAttacks : BossState
 {
     private bool _isInCenter;
     private GameObject _acidSplash;
-    private int _timeToBlast = 20;
+    private int _timeToBlast = 15;
     private int _lastTime;
     private float _timeToTheNextState = 15;
 
@@ -122,8 +122,6 @@ public class AcidAttacks : BossState
         if (_isInCenter)
         {
             _lastTime--;
-            LookToPlayer();
-            
             if(_lastTime == 0)
             {
                 GameObject newAcidSplash = Object.Instantiate(_acidSplash, _boss);
@@ -132,18 +130,51 @@ public class AcidAttacks : BossState
                 _lastTime = _timeToBlast;
             }
 
-            _timeToTheNextState -= Time.deltaTime;
+            _timeToTheNextState -= 0.1f;
             if(_timeToTheNextState <= 0)
             {
-                return new EatingPlayer(_boss, _playerTransform);
+                return new WebAttack(_boss, _playerTransform);
             }
         }
+
+        LookToPlayer();
         return base.UpdateState();
     }
 
     public override void ReachedDestination()
     {
         _isInCenter = true;
+    }
+}
+
+public class WebAttack : BossState
+{
+    private GameObject _webThread;
+    private int _waitingTime = 20;
+
+    public WebAttack(Transform boss, Transform player) : base(boss, player)
+    {
+        _webThread = Resources.Load<GameObject>("Web");
+    }
+
+    public override void ReachedDestination()
+    {
+    }
+
+    public override BossStates UpdateState()
+    {
+        _waitingTime -= 1;
+        if(_waitingTime == 0)
+        {
+            WebCast();
+            return new EatingPlayer(_boss, _playerTransform);
+        }
+        return base.UpdateState();
+    }
+
+    private void WebCast()
+    {
+
     }
 }
 
