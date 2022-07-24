@@ -200,6 +200,7 @@ public class BossFight : MonoBehaviour
 
     private BossStates _states;
     private Transform _transform;
+    private BossAnimations _animations;
     private Seeker _seeker;
     private Path _path;
     private List<Vector3> _way;
@@ -209,6 +210,7 @@ public class BossFight : MonoBehaviour
     {
         _transform = GetComponent<Transform>();
         _states = new WaitingPlayer(_transform, FindObjectOfType<PlayerHealth>().transform);
+        _animations = GetComponentInChildren<BossAnimations>();
         _seeker = GetComponent<Seeker>();
         _way = new List<Vector3>();
 
@@ -230,6 +232,11 @@ public class BossFight : MonoBehaviour
     {
         _seeker.StartPath(start: _transform.position,
                             end: target);
+    }
+
+    public void Damaged(float currentHealth)
+    {
+        _animations.UpdateHP(currentHealth);
     }
 
     private IEnumerator UpdatePosition()

@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
 {
-    [SerializeField] protected float _maxHealth;
+    [SerializeField] private float _maxHealth;
     protected float _currentHealth;
+    private BossFight _boss;
 
     public virtual (float current, float max) GetHealthParams()
     {
@@ -15,6 +16,7 @@ public class EnemyHealth : MonoBehaviour
     protected virtual void Start()
     {
         _currentHealth = _maxHealth;
+        _boss = GetComponent<BossFight>();
     }
 
     public virtual void Hurt(float damage)
@@ -24,6 +26,8 @@ public class EnemyHealth : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        _boss.Damaged(_currentHealth);
     }
 
     public virtual void Heal(float restorePoints)
