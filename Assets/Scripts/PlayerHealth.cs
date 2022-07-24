@@ -7,6 +7,7 @@ public class PlayerHealth : MonoBehaviour
 {
     [SerializeField] protected float _maxHealth;
     protected float _currentHealth;
+    private PlayerHealthPresenter _presenter;
 
     public virtual (float current, float max) GetHealthParams()
     {
@@ -16,6 +17,7 @@ public class PlayerHealth : MonoBehaviour
     protected virtual void Start()
     {
         _currentHealth = _maxHealth;
+        _presenter = GetComponent<PlayerHealthPresenter>();
     }
 
     public virtual void Hurt(float damage)
@@ -25,6 +27,8 @@ public class PlayerHealth : MonoBehaviour
         {
             SceneManager.LoadScene(0);
         }
+
+        _presenter.UpdateHP(_currentHealth);
     }
 
     public virtual void Heal(float restorePoints)

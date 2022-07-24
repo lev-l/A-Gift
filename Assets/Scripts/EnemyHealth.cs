@@ -24,6 +24,8 @@ public class EnemyHealth : MonoBehaviour
         _currentHealth -= damage;
         if(_currentHealth <= 0)
         {
+            _currentHealth = 0;
+            _boss.Damaged(_currentHealth);
             Destroy(gameObject);
         }
 
