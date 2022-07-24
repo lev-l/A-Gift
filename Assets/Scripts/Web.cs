@@ -11,7 +11,7 @@ public class Web : MonoBehaviour
     private List<Collider2D> _colliders;
     private bool _notReached = true;
 
-    void Start()
+    private void Start()
     {
         _transform = GetComponent<Transform>();
         _collider = GetComponent<BoxCollider2D>();
@@ -21,16 +21,17 @@ public class Web : MonoBehaviour
         _filter.useLayerMask = true;
         _filter.SetLayerMask(Physics2D.GetLayerCollisionMask(gameObject.layer));
         _colliders = new List<Collider2D>();
+
+        Invoke(nameof(DestroyIt), 3);
     }
 
-    void Update()
+    private void Update()
     {
         if (_notReached)
         {
             Vector3 newScale = _transform.localScale;
             newScale.y += Speed * Time.deltaTime;
             _transform.localScale = newScale;
-            _collider.size = newScale;
         }
 
         _colliders.Clear();
@@ -40,7 +41,18 @@ public class Web : MonoBehaviour
             if (!collider.GetComponent<BossFight>())
             {
                 _notReached = false;
+                PlayerMovement player = collider.GetComponent<PlayerMovement>();
+
+                if (player)
+                {
+                    player.Freeze();
+                }
             }
         }
+    }
+
+    private void DestroyIt()
+    {
+        Destroy(gameObject);
     }
 }
