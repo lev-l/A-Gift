@@ -8,6 +8,8 @@ public interface BossStates
     public BossStates UpdateState();
 
     public void ReachedDestination();
+
+    public void Damaged();
 }
 
 public abstract class BossState : BossStates
@@ -33,6 +35,10 @@ public abstract class BossState : BossStates
     public virtual void ReachedDestination()
     {
         throw new System.NotImplementedException();
+    }
+
+    public virtual void Damaged()
+    {
     }
 
     protected Quaternion GetRotationToPlayer(float angleChange = 0)
@@ -96,6 +102,11 @@ public class EatingPlayer : BossState
             return new AcidAttacks(_boss, _playerTransform);
         }
         return base.UpdateState();
+    }
+
+    public override void Damaged()
+    {
+        _reachedPlayer = true;
     }
 
     public override void ReachedDestination()
@@ -237,6 +248,7 @@ public class BossFight : MonoBehaviour
     public void Damaged(float currentHealth)
     {
         _animations.UpdateHP(currentHealth);
+        _states.Damaged();
     }
 
     private IEnumerator UpdatePosition()
