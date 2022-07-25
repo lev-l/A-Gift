@@ -37,7 +37,7 @@ public class AcidSplash : MonoBehaviour
                 PlayerHealth player = collider.GetComponent<PlayerHealth>();
                 if (player)
                 {
-                    player.Hurt(20);
+                    player.Hurt(5);
                 }
 
                 Destroy(gameObject);
