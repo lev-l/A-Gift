@@ -15,7 +15,7 @@ public class Bow : MonoBehaviour
     private void Start()
     {
         _transform = GetComponent<Transform>();
-        _layerMask = Physics2D.GetLayerCollisionMask(_transform.parent.gameObject.layer);
+        _layerMask = Physics2D.GetLayerCollisionMask(_transform.gameObject.layer);
         _animations = GetComponent<BowAnimations>();
     }
 
