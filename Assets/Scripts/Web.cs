@@ -5,7 +5,7 @@ using UnityEngine;
 public class Web : MonoBehaviour
 {
     public float Speed;
-    private Transform _transform;
+    private SpriteRenderer _renderer;
     private BoxCollider2D _collider;
     private ContactFilter2D _filter;
     private List<Collider2D> _colliders;
@@ -13,7 +13,7 @@ public class Web : MonoBehaviour
 
     private void Start()
     {
-        _transform = GetComponent<Transform>();
+        _renderer = GetComponent<SpriteRenderer>();
         _collider = GetComponent<BoxCollider2D>();
         _filter = new ContactFilter2D();
 
@@ -29,9 +29,11 @@ public class Web : MonoBehaviour
     {
         if (_notReached)
         {
-            Vector3 newScale = _transform.localScale;
+            Vector3 newScale = _renderer.size;
             newScale.y += Speed * Time.deltaTime;
-            _transform.localScale = newScale;
+            _renderer.size = newScale;
+            _collider.size = newScale;
+            _collider.offset = new Vector2(0, newScale.y / 2f);
         }
 
         _colliders.Clear();

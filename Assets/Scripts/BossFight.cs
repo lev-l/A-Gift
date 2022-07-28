@@ -260,6 +260,7 @@ public class BossFight : MonoBehaviour
                 _path = null;
                 _way.Clear();
                 _nextWaypoint = 0;
+                _animations.StopMoving();
 
                 _states.ReachedDestination();
             }
@@ -283,6 +284,7 @@ public class BossFight : MonoBehaviour
         _way.Clear();
         _way = _path.vectorPath;
         _nextWaypoint = 0;
+        _animations.StartMoving();
 
         StopCoroutine(nameof(UpdatePosition));
         StartCoroutine(nameof(UpdatePosition));
