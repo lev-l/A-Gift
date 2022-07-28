@@ -1,15 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(RotationToMouse))]
 public class BowAnimations : MonoBehaviour
 {
+    private TextMeshProUGUI _arrowsNumber;
     private Transform _transform;
     private Transform _arrow;
 
     void Start()
     {
+        _arrowsNumber = GameObject.Find("Arrows").GetComponent<TextMeshProUGUI>();
         _transform = GetComponent<Transform>();
         _arrow = _transform.GetChild(0);
     }
@@ -17,6 +21,11 @@ public class BowAnimations : MonoBehaviour
     public void UpdateBowTense(float strength)
     {
         _transform.localPosition = _transform.TransformDirection(Vector3.down * strength / 30);
+    }
+
+    public void UpdateArrowsCount(int currentCount)
+    {
+        _arrowsNumber.text = currentCount.ToString();
     }
 
     public void StartArrow(float strength)

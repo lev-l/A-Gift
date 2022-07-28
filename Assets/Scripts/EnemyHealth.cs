@@ -26,6 +26,7 @@ public class EnemyHealth : MonoBehaviour
         {
             _currentHealth = 0;
             _boss.Damaged(_currentHealth);
+            FindObjectOfType<HappyB>().Show();
             Destroy(gameObject);
         }
 

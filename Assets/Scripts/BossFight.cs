@@ -59,8 +59,13 @@ public abstract class BossState : BossStates
 
 public class WaitingPlayer : BossState
 {
+    private AudioClip _music;
+    private AudioSource _audioPlayer;
+
     public WaitingPlayer(Transform boss, Transform player) : base(boss, player)
     {
+        _music = Resources.Load<AudioClip>("Music");
+        _audioPlayer = GameObject.FindObjectOfType<AudioSource>();
     }
 
     public override BossStates UpdateState()
@@ -70,6 +75,9 @@ public class WaitingPlayer : BossState
         {
             GameObject wall = Resources.Load<GameObject>("Wall");
             MonoBehaviour.Instantiate(wall);
+            _audioPlayer.clip = _music;
+            _audioPlayer.Play();
+
             return new EatingPlayer(_boss, _playerTransform);
         }
         return base.UpdateState();
@@ -166,7 +174,7 @@ public class AcidAttacks : BossState
 public class WebAttack : BossState
 {
     private GameObject _webThread;
-    private int _waitingTime = 20;
+    private int _waitingTime = 50;
 
     public WebAttack(Transform boss, Transform player) : base(boss, player)
     {
